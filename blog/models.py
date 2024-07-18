@@ -11,6 +11,13 @@ VACANCY_STATUS = (
     ('archived', 'ARCHIVED'),
 )
 
+POST_TYPE = (
+    ('post', 'POST'),
+    ('article', 'ARTICLE'),
+    ('vacancy', 'VACANCY'),
+    ('case', 'CASE')
+)
+
 
 class User(AbstractUser):
     first_name = models.CharField(max_length=50)
@@ -51,47 +58,52 @@ class Company(models.Model):
         return self.name
 
 
-class Post(models.Model):
-    POST_TYPE = (
-        ('post', 'POST'),
-        ('article', 'ARTICLE'),
-        ('vacancy', 'VACANCY'),
-        ('case', 'CASE')
-    )
-
+class BasePost(models.Model):
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to='posts')
     body = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='%(class)s_posts')
     data = models.DateTimeField(auto_now_add=True)
     view = models.IntegerField(default=0)
+
+    class Meta:
+        abstract = True
+
+
+class Post(BasePost):
+    id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=250, choices=POST_TYPE, default='post')
 
     def __str__(self):
         return self.title
 
 
-class Article(Post):
+class Article(BasePost):
+    id = models.IntegerField(primary_key=True)
     direction = models.CharField(max_length=150)
+    type = models.CharField(max_length=250, choices=POST_TYPE, default='article')
 
     def __str__(self):
         return self.title
 
 
-class Vacancy(Post):
-
+class Vacancy(BasePost):
+    id = models.IntegerField(primary_key=True)
     location = models.CharField(max_length=150)
     requirements = models.CharField(max_length=150)
     status = models.CharField(max_length=250, choices=VACANCY_STATUS, default='active')
+    type = models.CharField(max_length=250, choices=POST_TYPE, default='vacancy')
 
     def __str__(self):
         return self.title
 
 
-class Case(Post):
+class Case(BasePost):
+    id = models.IntegerField(primary_key=True)
     location = models.CharField(max_length=150)
     condition = models.CharField(max_length=150)
     status = models.CharField(max_length=250, choices=VACANCY_STATUS, default='active')
+    type = models.CharField(max_length=250, choices=POST_TYPE, default='case')
 
     def __str__(self):
         return self.title
