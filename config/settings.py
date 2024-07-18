@@ -40,9 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'blog',
+    'notification',
     'rest_framework',
     'drf_yasg',
+    'channels',
 ]
+
+AUTH_USER_MODEL = "blog.User"
+
+ASGI_APPLICATION = 'config.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -128,8 +134,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-AUTH_USER_MODEL = "blog.User"
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -143,3 +147,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}

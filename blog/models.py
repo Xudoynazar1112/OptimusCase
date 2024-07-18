@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from notification.models import Notification
+
+
 STATUS = (
     ('general', 'GENERAL'),
     ('premium', 'PREMIUM'),
@@ -65,6 +68,16 @@ class BasePost(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='%(class)s_posts')
     data = models.DateTimeField(auto_now_add=True)
     view = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Notify followers or other relevant users
+        followers = User.objects.all()  # Example for followers
+        for follower in followers:
+            Notification.objects.create(
+                user=follower,
+                message=f"New post from {User.first_name}: {self.title}"
+            )
 
     class Meta:
         abstract = True
