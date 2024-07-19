@@ -1,13 +1,15 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth import get_user_model
 
 from notification.models import Notification
 
+User = get_user_model()
 
 STATUS = (
     ('general', 'GENERAL'),
     ('premium', 'PREMIUM'),
 )
+
 
 VACANCY_STATUS = (
     ('active', 'ACTIVE'),
@@ -20,28 +22,6 @@ POST_TYPE = (
     ('vacancy', 'VACANCY'),
     ('case', 'CASE')
 )
-
-
-class User(AbstractUser):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    middle_name = models.CharField(max_length=50)
-    avatar = models.ImageField(upload_to='avatars')
-    study = models.CharField(max_length=250)
-    status = models.CharField(max_length=250, choices=STATUS, default='general')
-    about = models.TextField()
-    skills = models.CharField(max_length=250)
-    experience = models.TextField()
-    interest = models.CharField(max_length=250)
-    location = models.CharField(max_length=50)
-    rating = models.IntegerField(default=0)
-    case = models.CharField(max_length=250)
-    groups = models.CharField(max_length=250)
-    chat = models.CharField(max_length=250)
-    target = models.CharField(max_length=250)
-
-    def __str__(self):
-        return f'{self.last_name} {self.first_name}'
 
 
 class Company(models.Model):
@@ -134,7 +114,7 @@ class PostComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Comment for {self.post.title} by {self.user.first_name}"
+        return f"Comment for {self.post.title} by {self.user.fist_name}"
 
 
 class CompanyComment(models.Model):

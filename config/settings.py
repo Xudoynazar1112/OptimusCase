@@ -40,13 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'blog',
+    'users',
     'notification',
     'rest_framework',
     'drf_yasg',
     'channels',
 ]
 
-AUTH_USER_MODEL = "blog.User"
+AUTH_USER_MODEL = "users.User"
 
 ASGI_APPLICATION = 'config.asgi.application'
 
